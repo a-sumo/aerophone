@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Navigate to the project directory
-cd /Users/armand/Documents/percept-tech
+cd /Users/armand/Documents/aerophone
 
 # Remove the build directory if it exists
 if [ -d "build" ]; then
