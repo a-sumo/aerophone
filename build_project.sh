@@ -28,4 +28,3 @@ if [ $? -eq 0 ]; then
 else
     echo "Make encountered errors!"
 fi
-```
