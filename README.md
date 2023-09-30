@@ -12,7 +12,7 @@ The inception of this project has been significantly influenced by a variety of 
 
 Initial explorations were conducted within game engine environments such as Unity; however, the stringent requirement for real-time audio synthesis proved to be a limiting factor. Temporarily setting aside the real-time constraint led to the discovery of pertinent academic work on audio synthesis from physical simulation. Although operating at audio rates presents a formidable challenge, the work of AngeTheGreat provided a glimpse into the realm of possibilities.
 
-Several frameworks and libraries have been experimented with to navigate through the challenges and constraints inherent to this project:
+Several frameworks and libraries have been experimented with so far:
 
 - **OpenGL and Vulkan:** Explored for their GPU programming and real-time rendering capabilities, but encountered setup issues particularly on the MacOS M1 setup.
 - **Taichi:** An open-source, parallel programming language embedded in Python, considered for offloading compute-intensive tasks to the GPU or CPU. However, its lack of advanced GUI capabilities posed a challenge.
