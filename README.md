@@ -21,13 +21,13 @@ Several frameworks and libraries have been experimented with so far:
 
 These explorations highlight the intricate balance between real-time audio synthesis, GPU programming, and interactive visualization in crafting the desired class of virtual instruments.
 
-## References
-
-- Mohapatra, Debasish Ray. "Talking tube: a novel approach for vocal tract acoustic modelling using the finite-difference time-domain method."
+## Reference material
+- [Hyper Drumhead, An Innovative Way to Create and Control Sounds](https://blog.siggraph.org/2022/08/an-innovative-way-to-create-and-control-sounds.html/)
 - [Aerophones in Flatland: Interactive Wave Simulation of Wind Instruments](https://www.microsoft.com/en-us/research/publication/aerophones-flatland-interactive-wave-simulation-wind-instruments/)
 - [Shader-based Physical Modelling for the Design of Massive Digital Musical Instruments](https://zenodo.org/record/1176203)
 - OpenGL FDTD Tutorial Series: [Episode 0](https://toomuchidle.com/opengl-fdtd/), [Episode 1](https://toomuchidle.com/opengl-fdtd-tutorial-episode-1-simulation-initialization/), [Episode 2](https://toomuchidle.com/opengl-fdtd-tutorial-episode-2-simulation-cycle-and-shader-programs/)
 - [Real-time Trumpet Simulation by AngeTheGreat](https://youtu.be/rGNUHigqUBM)
 - [Engine Simulator 2.0 Initial Audio Testing by AngeTheGreat](https://www.youtube.com/watch?v=FJatcAkC8XI)
 - [Taichi Library](https://pypi.org/project/taichi/)
+- Mohapatra, Debasish Ray. "Talking tube: a novel approach for vocal tract acoustic modelling using the finite-difference time-domain method."
 
