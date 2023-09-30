@@ -2,15 +2,15 @@ aerophone
 
 ## Introduction
 
-The core objective of this project is to define a class of intuitive, sound generating physical processes. These processes are envisioned to span a broad spectrum of sounds, extending far beyond the audio feature regions typically associated with their real-world counterparts. Unlike conventional instruments, the envisioned class is tailored for Extended Reality (XR), factoring in the absence of haptic feedback, and emphasizing the evocativeness and intuitiveness of visual representations in relation to audio features.
+The core objective of this project is to define a class of intuitive, sound generating physical processes. These processes are envisioned to span a broad spectrum of sounds, extending beyond the audio feature regions typically associated with their real-world counterparts. Unlike real-world instruments, this class is tailored for Extended Reality (XR), factoring in the absence of haptic feedback, and emphasizing the evocativeness and intuitiveness of visual representations in relation to audio features.
 
 ## Reference Material
 
-The inception of this project has been significantly influenced by a variety of academic and practical works. The real-time audio synthesis capability demonstrated by AngeTheGreat in his [Real-time Trumpet Simulation](https://youtu.be/rGNUHigqUBM) and [Engine Simulator 2.0 Initial Audio Testing](https://www.youtube.com/watch?v=FJatcAkC8XI) projects, for instance, served as a notable inspiration. Further insights were derived from the publication "Aerophones in Flatland", which explores interactive wave simulation of wind instruments, and the series on Shader-based Physical Modelling, which delves into real-time physical modelling synthesis on the GPU using OpenGL shaders.
+The real-time audio synthesis capability demonstrated by AngeTheGreat in his [Real-time Trumpet Simulation](https://youtu.be/rGNUHigqUBM) and [Engine Simulator 2.0 Initial Audio Testing](https://www.youtube.com/watch?v=FJatcAkC8XI) projects, for instance, served as an inspiration to pursue this avenue. Further insights were derived from the publication "Aerophones in Flatland", which explores interactive wave simulation of wind instruments, and the series on Shader-based Physical Modelling, which delves into real-time physical modelling synthesis on the GPU using OpenGL shaders.
 
 ## Approaches Explored
 
-Initial explorations were conducted within game engine environments such as Unity; however, the stringent requirement for real-time audio synthesis proved to be a limiting factor. Temporarily setting aside the real-time constraint led to the discovery of pertinent academic work on audio synthesis from physical simulation. Although operating at audio rates presents a formidable challenge, the work of AngeTheGreat provided a glimpse into the realm of possibilities.
+Initial explorations were made in game engine environments such as Unity; however, the stringent requirement for real-time audio synthesis proved to be a limiting factor. I temporarily set aside the real-time constraint and focused on relevant academic work on audio synthesis from physical simulation. Operating at audio rates is challenging but feasible.
 
 Several frameworks and libraries have been experimented with so far:
 
@@ -19,7 +19,7 @@ Several frameworks and libraries have been experimented with so far:
 - **bgfx:** Investigated for rendering capabilities, but the complexity in setting up with window handlers like GLFW was a hindrance.
 - **Qt6:** Offered UI and graphics capabilities but felt somewhat isolated in its approach, as opposed to a more modular framework that would allow for easier transitions as project requirements evolve.
 
-These explorations highlight the intricate balance between real-time audio synthesis, GPU programming, and interactive visualization in crafting the envisioned class of virtual instruments.
+These explorations highlight the intricate balance between real-time audio synthesis, GPU programming, and interactive visualization in crafting the desired class of virtual instruments.
 
 ## References
 
