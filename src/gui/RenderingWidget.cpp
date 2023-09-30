@@ -15,40 +15,51 @@ void RenderingWidget::setWaveSimulation(WaveSimulation* sim)
     simulation = sim;
 }
 
+void RenderingWidget::setWaveguide(const DigitalWaveguide& wg) 
+{
+    waveguide = &wg;
+}
 void RenderingWidget::paintEvent(QPaintEvent* event)
 {
- QPainter painter(this);
+    QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing);
-    painter.fillRect(this->rect(), Qt::black); // Fill the background with black
+    painter.fillRect(this->rect(), Qt::black);  // Fill the background with black
 
+    const double amplitudeScaling = 50.0;  // Adjust this value based on your needs
 
-    const int tubeWidth = 20;
-    const double amplitudeScaling = 1000.0;
+    // Draw the waveguide as a long rectangle
+    int waveguideLength = waveguide ? waveguide->getLength() : 0;  // Get the length from the waveguide
+    QRect waveguideRect(10, this->height() / 2 - 10, waveguideLength * 2.0, 20);  // Modify as necessary
 
-    if (simulation)
+    // Draw white lines 
+    painter.setPen(Qt::white);
+
+    // Draw the waveguide
+    painter.drawRect(waveguideRect);  // White waveguide
+    
+    // Draw a baseline in the middle of the waveguide
+    painter.drawLine(waveguideRect.left(), waveguideRect.center().y(), waveguideRect.right(), waveguideRect.center().y());
+
+    // Draw the waveform inside the waveguide
+    if (waveguide)
     {
-        const auto& radii = simulation->getRadii();
-        const auto& values = simulation->getPreviousValues();
-        // log values
-        for (size_t i = 0; i < radii.size(); ++i)
-        {
-            std::cout << "radii[" << i << "] = " << radii[i] << std::endl;
-            std::cout << "values[" << i << "] = " << values[i] << std::endl;
-        }
+        const auto& waveValues = waveguide->getValues();  // Assuming you have such a method
         int x = 10;
+        int prevY = this->height() / 2;
 
-        for (size_t i = 0; i < radii.size(); ++i)
+        for (size_t i = 0; i < waveValues.size(); ++i)
         {
-            int height = static_cast<int>(radii[i] * amplitudeScaling);
-            QColor color(0, 0, 255, static_cast<int>(values[i] * 255));  // Blue with intensity based on wave value
+            int y = this->height() / 2 - static_cast<int>(waveValues[i] * amplitudeScaling);
 
-            QRect rect(x, (this->height() - height) / 2, tubeWidth, height);
-            painter.fillRect(rect, color);
-
-            x += tubeWidth + 5;
+            // Connect consecutive points
+            painter.drawLine(x - 2, prevY, x, y);
+            
+            prevY = y;
+            x += 2;  // Adjust as necessary
         }
     }
 }
+
 
 
 void RenderingWidget::updateVisualization()

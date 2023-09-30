@@ -4,9 +4,9 @@
 #include <cmath>
 
 constexpr double TAU = 6.283185307179586; // 2*Pi
-constexpr double FREQUENCY = 440.0;       // A4 note frequency
-
-AudioEngine::AudioEngine() : simulation({0.01, 0.012, 0.015, 0.018, 0.02})
+constexpr double BASE_FREQUENCY = 440.0;  // A4 note frequency
+// define digital waveguide with physical length
+AudioEngine::AudioEngine() : waveguide(44100 / BASE_FREQUENCY)
 {
     if (dac.getDeviceCount() < 1)
     {
@@ -72,6 +72,22 @@ void AudioEngine::stopAudio()
     dac.stopStream();
 }
 
+void AudioEngine::setPipeLength(double velocity)
+{
+    pipeLength = velocity;
+    size_t newLength = static_cast<size_t>(100 + pipeLength * 1000); // Just an example mapping
+    setWaveguideLength(newLength);
+}
+
+void AudioEngine::setAmplitude(double pressure)
+{
+    Amplitude = pressure;
+}
+
+void AudioEngine::setWaveguideLength(size_t length) {
+    waveguide.setLength(length);
+}
+
 int AudioEngine::audioCallback(void *outputBuffer, void *inputBuffer, unsigned int nBufferFrames,
                                double streamTime, RtAudioStreamStatus status, void *data)
 {
@@ -80,9 +96,18 @@ int AudioEngine::audioCallback(void *outputBuffer, void *inputBuffer, unsigned i
 
     for (unsigned int i = 0; i < nBufferFrames; ++i)
     {
-        double inputSample = std::sin(TAU * FREQUENCY * streamTime); // Sine wave for testing
-        outBuffer[i] = self->simulation.updateAndGetSample(inputSample);
+        double modulatedFrequency = BASE_FREQUENCY + self->pipeLength * 100.0; 
+        double inputSample = self->Amplitude * std::sin(TAU * modulatedFrequency * streamTime);
+        outBuffer[i] = self->waveguide.processSample(inputSample);
     }
+
+    // Print for debugging
+    // static int counter = 0;
+    // if (counter++ % 500 == 0)
+    // { // Print every 500 callbacks to avoid too much console spam
+    //     std::cout << "Modulated Frequency: " << BASE_FREQUENCY + self->pipeLength * 1000.0 << std::endl;
+    //     std::cout << "Pressure Multiplier: " << self->Amplitude << std::endl;
+    // }
 
     return 0;
 }

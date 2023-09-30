@@ -12,12 +12,22 @@ MainWindow::MainWindow(AudioEngine* engine, QWidget* parent)
     renderingWidget = new RenderingWidget(centralWidget);
     layout->addWidget(renderingWidget);
 
-    // Sample slider for demonstration
-    QSlider* slider = new QSlider(Qt::Horizontal, this);
-    layout->addWidget(slider);
-    connect(slider, &QSlider::valueChanged, this, &MainWindow::updateSimulationSettings);
+    // Fluid velocity slider
+    layout->addWidget(new QLabel("Pipe Length:", this));
+    velocitySlider = new QSlider(Qt::Horizontal, this);
+    layout->addWidget(velocitySlider);
+    connect(velocitySlider, &QSlider::valueChanged, this, &MainWindow::setPipeLength);
 
-    // Sample button to stop/start audio for demonstration
+    // Fluid pressure slider
+    layout->addWidget(new QLabel("Amplitude:", this));
+    pressureSlider = new QSlider(Qt::Horizontal, this);
+    layout->addWidget(pressureSlider);
+    connect(pressureSlider, &QSlider::valueChanged, this, &MainWindow::setAmplitude);
+
+    velocitySlider->setRange(0, 10);  // e.g., 0 to 10 units
+    pressureSlider->setRange(0, 10);  // e.g., 0 to 10 units
+
+    // Toggle audio button
     QPushButton* audioButton = new QPushButton("Toggle Audio", this);
     layout->addWidget(audioButton);
     connect(audioButton, &QPushButton::clicked, [this]() {
@@ -30,8 +40,21 @@ MainWindow::MainWindow(AudioEngine* engine, QWidget* parent)
         isAudioRunning = !isAudioRunning;
     });
 
+    // This is the corrected line
+    this->getRenderingWidget()->setWaveguide(audioEngine->getWaveguide());
+
     this->setCentralWidget(centralWidget);
     this->setStyleSheet("background-color: black;");
+}
+
+void MainWindow::setPipeLength()
+{
+    audioEngine->setPipeLength(velocitySlider->value() / 100.0);
+}
+
+void MainWindow::setAmplitude()
+{
+    audioEngine->setAmplitude(pressureSlider->value() / 100.0);
 }
 
 RenderingWidget* MainWindow::getRenderingWidget() const
@@ -41,9 +64,5 @@ RenderingWidget* MainWindow::getRenderingWidget() const
 
 void MainWindow::updateSimulationSettings()
 {
-    // Fetch values from sliders and other controls (for example, the sample slider above)
-    // Update the renderingWidget with the new values
-
-    // This line seems to be a comment or a mistake, I'll comment it out for now
-    // renderingWidget->updateVisualization() or similar
+    // TODO: Update the renderingWidget with the new values
 }

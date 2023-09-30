@@ -1,22 +1,28 @@
 #pragma once
 
 #include <QMainWindow>
+#include <QSlider>
+#include <QLabel>
 #include "RenderingWidget.h"
-#include "audio/AudioEngine.h"  // Include the header for AudioEngine
+#include "audio/AudioEngine.h"  
+#include "simulation/DigitalWaveguide.h" 
 
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
 
 public:
-    explicit MainWindow(AudioEngine* audioEngine, QWidget* parent = nullptr);  // Adjust the constructor to accept an AudioEngine pointer
+    explicit MainWindow(AudioEngine* audioEngine, QWidget* parent = nullptr);
     RenderingWidget* getRenderingWidget() const;
 
 private slots:
-    void updateSimulationSettings();  // To be connected with sliders or other controls
+    void updateSimulationSettings();
+    void setPipeLength();   // New function
+    void setAmplitude();   // New function
 
 private:
     RenderingWidget* renderingWidget;
-    AudioEngine* audioEngine;  // Member variable for AudioEngine
-    // Add other UI elements like sliders, buttons, etc. here
+    AudioEngine* audioEngine;
+    QSlider* velocitySlider;   // New slider
+    QSlider* pressureSlider;   // New slider
 };
