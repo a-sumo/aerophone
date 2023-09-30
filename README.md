@@ -22,6 +22,7 @@ Several frameworks and libraries have been experimented with so far:
 These explorations highlight the intricate balance between real-time audio synthesis, GPU programming, and interactive visualization in crafting the desired class of virtual instruments.
 
 ## Reference material
+- [Real-Time Synthesis of an Aeolian tone](https://intelligentsoundengineering.wordpress.com/2016/05/19/real-time-synthesis-of-an-aeolian-tone/)
 - [Hyper Drumhead, An Innovative Way to Create and Control Sounds](https://blog.siggraph.org/2022/08/an-innovative-way-to-create-and-control-sounds.html/)
 - [Aerophones in Flatland: Interactive Wave Simulation of Wind Instruments](https://www.microsoft.com/en-us/research/publication/aerophones-flatland-interactive-wave-simulation-wind-instruments/)
 - [Shader-based Physical Modelling for the Design of Massive Digital Musical Instruments](https://zenodo.org/record/1176203)
