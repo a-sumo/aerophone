@@ -23,12 +23,10 @@ These explorations highlight the intricate balance between real-time audio synth
 
 ## Reference material
 - [Real-Time Synthesis of an Aeolian tone](https://intelligentsoundengineering.wordpress.com/2016/05/19/real-time-synthesis-of-an-aeolian-tone/)
-- [Hyper Drumhead, An Innovative Way to Create and Control Sounds](https://blog.siggraph.org/2022/08/an-innovative-way-to-create-and-control-sounds.html/)
+- [Creating Real-Time Aeroacoustic Sound Effects Using Physically Informed Models](https://www.aes.org/journal/online/JAES_V66/7_8/#paper6)
 - [Aerophones in Flatland: Interactive Wave Simulation of Wind Instruments](https://www.microsoft.com/en-us/research/publication/aerophones-flatland-interactive-wave-simulation-wind-instruments/)
-- [Shader-based Physical Modelling for the Design of Massive Digital Musical Instruments](https://zenodo.org/record/1176203)
-- OpenGL FDTD Tutorial Series: [Episode 0](https://toomuchidle.com/opengl-fdtd/), [Episode 1](https://toomuchidle.com/opengl-fdtd-tutorial-episode-1-simulation-initialization/), [Episode 2](https://toomuchidle.com/opengl-fdtd-tutorial-episode-2-simulation-cycle-and-shader-programs/)
 - [Real-time Trumpet Simulation by AngeTheGreat](https://youtu.be/rGNUHigqUBM)
 - [Engine Simulator 2.0 Initial Audio Testing by AngeTheGreat](https://www.youtube.com/watch?v=FJatcAkC8XI)
-- [Taichi Library](https://pypi.org/project/taichi/)
-- Mohapatra, Debasish Ray. "Talking tube: a novel approach for vocal tract acoustic modelling using the finite-difference time-domain method."
+- [Hyper Drumhead, An Innovative Way to Create and Control Sounds](https://blog.siggraph.org/2022/08/an-innovative-way-to-create-and-control-sounds.html/)
+- [Shader-based Physical Modelling for the Design of Massive Digital Musical Instruments](https://zenodo.org/record/1176203)
 
