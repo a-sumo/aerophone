@@ -1,6 +1,5 @@
 
 aerophone
-
 ## Introduction
 
 The core objective of this project is to define a class of intuitive, sound generating physical processes. These processes should span a broad spectrum of sounds, extending beyond the audio feature regions typically associated with their real-world counterparts. Unlike real-world instruments, this class of processes is tailored for Extended Reality (XR) applications often characterized by an absence of haptic feedback. Another key requirement is the evocativeness and intuitiveness of visual representations in relation to audio features.
@@ -60,6 +59,12 @@ FDTD is hard to do in real time.  Digital waveguide synthesis lacks physical int
 - [Engine Simulator 2.0 Initial Audio Testing by AngeTheGreat](https://www.youtube.com/watch?v=FJatcAkC8XI)
 - [Hyper Drumhead, An Innovative Way to Create and Control Sounds](https://blog.siggraph.org/2022/08/an-innovative-way-to-create-and-control-sounds.html/)
 - [Shader-based Physical Modelling for the Design of Massive Digital Musical Instruments](https://zenodo.org/record/1176203)
+
+## Screenshots 
+<details>
+    <summary>Iteration 1</summary>
+    <img width="400" alt="First Iteration" src="https://github.com/a-sumo/aerophone/assets/75185852/b3d1c133-dc60-4297-be0b-677be3e33d40">
+</details>
 
 
 
