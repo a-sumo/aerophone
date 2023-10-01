@@ -28,8 +28,11 @@ qt_add_executable(helloworld
     src/gui/MainWindow.h
     src/gui/RenderingWidget.cpp
     src/gui/RenderingWidget.h
+    src/simulation/AeolianToneGenerator.cpp
+    src/simulation/AeolianToneGenerator.h
     src//simulation/DigitalWaveguide.h
     src/simulation/DigitalWaveguide.cpp
+
 )
 
 # Link against Qt and RtAudio libraries
