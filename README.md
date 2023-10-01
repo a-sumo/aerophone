@@ -1,13 +1,52 @@
+
 aerophone
 
 ## Introduction
 
 The core objective of this project is to define a class of intuitive, sound generating physical processes. These processes should span a broad spectrum of sounds, extending beyond the audio feature regions typically associated with their real-world counterparts. Unlike real-world instruments, this class of processes is tailored for Extended Reality (XR) applications often characterized by an absence of haptic feedback. Another key requirement is the evocativeness and intuitiveness of visual representations in relation to audio features.
 
+## Requirements
+
+### Dependencies:
+- Qt6
+- RtAudio
+- Python (for some scripts)
+- Taichi (Python library)
+- Numpy (Python library)
+
+### Note:
+The Taichi code uses the Vulkan backend. Ensure that Vulkan is installed on your system.
+
+### Setup Guide:
+1. **Clone the Repository**: 
+    ```bash
+    git clone https://github.com/a-sumo/aerophone.git
+    cd aerophone
+    ```
+2. **Install the Dependencies**:
+   - **Windows**: Use the respective package managers or installers for the dependencies.
+   - **Linux**: 
+     ```bash
+     sudo apt-get install qt6-default
+     sudo apt-get install librtaudio-dev
+     pip install taichi numpy
+     ```
+   - **MacOS**:
+     ```bash
+     brew install qt6
+     brew install rtaudio
+     pip install taichi numpy
+     ```
+
+3. **Build and Run**:
+    ```bash
+    ./build_project.sh
+    ```
+
 ## Approaches Explored
 
-Aeroacoustics seems to be the cass of sound-generating processes most likely to be satisfy my requirements. Within this, I need to find one that is most evocative and adapted for XR.So far, I've tried the following: 
-- **Water sounds (bubble vibrations)** are very intuitive but too computational instensive for real-time applications as they require the use of [wavesolvers](https://graphics.stanford.edu/papers/coupledbubbles/)
+Aeroacoustics seems to be the class of sound-generating processes most likely to satisfy my requirements. Within this, I need to find one that is most evocative and adapted for XR. So far, I've tried the following: 
+- **Water sounds (bubble vibrations)** are very intuitive but too computationally intensive for real-time applications as they require the use of [wavesolvers](https://graphics.stanford.edu/papers/coupledbubbles/)
 - **Brass wind instruments** can be simulated using either sound propagation simulations with the Finite-Difference Time Domain(FDTD) method or Digital Waveguide Synthesis. 
 FDTD is hard to do in real time.  Digital waveguide synthesis lacks physical intuitiveness.
 - **Aeolian tones** are a promising avenue that I'm currently exploring.
@@ -21,4 +60,6 @@ FDTD is hard to do in real time.  Digital waveguide synthesis lacks physical int
 - [Engine Simulator 2.0 Initial Audio Testing by AngeTheGreat](https://www.youtube.com/watch?v=FJatcAkC8XI)
 - [Hyper Drumhead, An Innovative Way to Create and Control Sounds](https://blog.siggraph.org/2022/08/an-innovative-way-to-create-and-control-sounds.html/)
 - [Shader-based Physical Modelling for the Design of Massive Digital Musical Instruments](https://zenodo.org/record/1176203)
+
+
 

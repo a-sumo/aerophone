@@ -1,7 +1,10 @@
 #!/bin/bash
 
+# Get the directory of the current script
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
 # Navigate to the project directory
-cd /Users/armand/Documents/aerophone
+cd $DIR
 
 # Remove the build directory if it exists
 if [ -d "build" ]; then
@@ -12,19 +15,25 @@ fi
 mkdir build
 cd build
 
-# Run CMake
-cmake ..
+# Check for RtAudio argument
+if [ "$1" ]; then
+    RTAUDIO_PATH=$1
+    cmake .. -DRTAUDIO_INCLUDE_DIR=$RTAUDIO_PATH/include -DRTAUDIO_LIBRARY=$RTAUDIO_PATH/lib/librtaudio.dylib
+else
+    cmake ..
+fi
 
-# If CMake completes without errors, run make
+
+# If CMake completes without errors, build the project
 if [ $? -eq 0 ]; then
-    make
+    cmake --build . --config Release
 else
     echo "CMake encountered errors!"
 fi
 
-# If make completes without errors, run the executable
+# If build completes without errors, run the executable
 if [ $? -eq 0 ]; then
-    ./helloworld
+    ./aerophone
 else
-    echo "Make encountered errors!"
+    echo "Build process encountered errors!"
 fi
