@@ -19,46 +19,59 @@ void RenderingWidget::setWaveguide(const DigitalWaveguide& wg)
 {
     waveguide = &wg;
 }
+void RenderingWidget::setAudioEngine(const AudioEngine* engine)
+{
+    audioEngine = engine;
+}
 void RenderingWidget::paintEvent(QPaintEvent* event)
 {
     QPainter painter(this);
+    // get audio engine
     painter.setRenderHint(QPainter::Antialiasing);
     painter.fillRect(this->rect(), Qt::black);  // Fill the background with black
 
-    const double amplitudeScaling = 50.0;  // Adjust this value based on your needs
-
-    // Draw the waveguide as a long rectangle
-    int waveguideLength = waveguide ? waveguide->getLength() : 0;  // Get the length from the waveguide
-    QRect waveguideRect(10, this->height() / 2 - 10, waveguideLength * 2.0, 20);  // Modify as necessary
-
-    // Draw white lines 
-    painter.setPen(Qt::white);
-
-    // Draw the waveguide
-    painter.drawRect(waveguideRect);  // White waveguide
-    
-    // Draw a baseline in the middle of the waveguide
-    painter.drawLine(waveguideRect.left(), waveguideRect.center().y(), waveguideRect.right(), waveguideRect.center().y());
-
-    // Draw the waveform inside the waveguide
-    if (waveguide)
+    if (audioEngine->getCurrentMode() == AudioEngine::WAVEGUIDE) 
     {
-        const auto& waveValues = waveguide->getValues();  // Assuming you have such a method
-        int x = 10;
-        int prevY = this->height() / 2;
+        // Drawing the waveguide plot with labeled axes
+        QRect plotRect(50, 50, this->width() - 100, this->height() - 100);
+        painter.drawRect(plotRect);
+
+        // Labeling axes
+        painter.drawText(25, plotRect.center().y(), "0");
+        painter.drawText(10, plotRect.top() - 5, "Max Amp");
+        painter.drawText(10, plotRect.bottom() + 15, "-Max Amp");
+        
+        // Drawing the waveform inside the plot
+        const auto& waveValues = waveguide->getValues();
+        double scaleX = static_cast<double>(plotRect.width()) / waveValues.size();
+        double scaleY = plotRect.height() / 2.0;
+        int prevY = plotRect.center().y();
 
         for (size_t i = 0; i < waveValues.size(); ++i)
         {
-            int y = this->height() / 2 - static_cast<int>(waveValues[i] * amplitudeScaling);
-
-            // Connect consecutive points
-            painter.drawLine(x - 2, prevY, x, y);
-            
+            int x = plotRect.left() + i * scaleX;
+            int y = plotRect.center().y() - static_cast<int>(waveValues[i] * scaleY);
+            painter.drawLine(x - scaleX, prevY, x, y);
             prevY = y;
-            x += 2;  // Adjust as necessary
         }
+    } 
+    else if (audioEngine->getCurrentMode() == AudioEngine::AEOLIAN_TONE) 
+    {
+        // Drawing the cylinder (tube) as a rectangle
+        double diameter = audioEngine->getAeolianDiameter() * 0.1;  // Adjust scaling as necessary
+        QRect cylinderRect(this->width() / 4, this->height() / 2 - diameter / 2, this->width() / 2, diameter);
+        painter.drawRect(cylinderRect);
+
+        // Animated arrows to represent the air flow
+        double flowVelocity = audioEngine->getAeolianFlowVelocity();
+        int arrowLength = static_cast<int>(flowVelocity * 0.1);  // Adjust scaling as necessary
+        painter.drawLine(cylinderRect.left() - 20, cylinderRect.center().y(), cylinderRect.left() - 20 - arrowLength, cylinderRect.center().y());
+        painter.drawLine(cylinderRect.right() + 20, cylinderRect.center().y(), cylinderRect.right() + 20 + arrowLength, cylinderRect.center().y());
+
+        // TODO: Add more visual elements to represent reflection, propagation, or any other dynamics inside the cylinder.
     }
 }
+
 
 
 

@@ -2,6 +2,7 @@
 
 #include <QWidget>
 #include <QTimer>
+#include "audio/AudioEngine.h"
 #include "simulation/WaveSimulation.h"
 #include "simulation/DigitalWaveguide.h"
 
@@ -13,6 +14,7 @@ public:
     explicit RenderingWidget(QWidget* parent = nullptr);
     void setWaveSimulation(WaveSimulation* simulation);
     void setWaveguide(const DigitalWaveguide& waveguide);
+    void setAudioEngine(const AudioEngine* engine);
 
 protected:
     void paintEvent(QPaintEvent* event) override;
@@ -24,6 +26,6 @@ private:
     QTimer timer;
     WaveSimulation* simulation;
     const DigitalWaveguide* waveguide;
-
+    const AudioEngine* audioEngine;
     // Add other attributes related to visualization here, e.g., current wave position
 };
