@@ -28,3 +28,12 @@ void DigitalWaveguide::setReflectionCoefficient(double coefficient) {
 void DigitalWaveguide::setTransmissionCoefficient(double coefficient) {
     transmissionCoefficient = coefficient;
 }
+// Implement the reset method to clear any internal state
+void DigitalWaveguide::reset() {
+    // Reset the delay line
+    for (size_t i = 0; i < delayLine.size(); i++) {
+        delayLine[i] = 0.0;
+    }
+    // Reset the index
+    currentIdx = 0;
+}

@@ -4,6 +4,8 @@
 class DigitalWaveguide {
 public:
     DigitalWaveguide(size_t length);
+    // reset 
+    void reset();
     const std::vector<double>& getValues() const { return delayLine; }
     size_t getLength() const { return delayLine.size(); }
     // Adjust the length of the waveguide

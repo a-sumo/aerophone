@@ -5,8 +5,10 @@
 
 constexpr double TAU = 6.283185307179586; // 2*Pi
 constexpr double BASE_FREQUENCY = 440.0;  // A4 note frequency
-// define digital waveguide with physical length
-AudioEngine::AudioEngine() : waveguide(44100 / BASE_FREQUENCY)
+
+AudioEngine::AudioEngine()
+    : waveguide(44100 / BASE_FREQUENCY),
+      aeolianTone(1.0)
 {
     if (dac.getDeviceCount() < 1)
     {
@@ -58,7 +60,6 @@ void AudioEngine::startAudio()
         case RTAUDIO_INVALID_DEVICE:
             errorMessage = "Invalid device!";
             break;
-        // ... handle other error types ...
         default:
             errorMessage = "Unhandled RtAudio error!";
         }
@@ -72,20 +73,75 @@ void AudioEngine::stopAudio()
     dac.stopStream();
 }
 
-void AudioEngine::setPipeLength(double velocity)
+void AudioEngine::setPipeLength(double length)
 {
-    pipeLength = velocity;
+    pipeLength = length;
     size_t newLength = static_cast<size_t>(100 + pipeLength * 1000); // Just an example mapping
     setWaveguideLength(newLength);
 }
 
-void AudioEngine::setAmplitude(double pressure)
+void AudioEngine::setAmplitude(double amplitude)
 {
-    Amplitude = pressure;
+    Amplitude = amplitude;
 }
 
-void AudioEngine::setWaveguideLength(size_t length) {
+void AudioEngine::setWaveguideLength(size_t length)
+{
     waveguide.setLength(length);
+}
+void AudioEngine::setAeolianDiameter(double diameter)
+{
+    aeolianTone.setDiameter(diameter);
+}
+
+double AudioEngine::getAeolianDiameter() const
+{
+    return aeolianTone.getDiameter();
+}
+
+void AudioEngine::setAeolianFlowVelocity(double flowVelocity)
+{
+    fluidVelocity = flowVelocity;
+}
+
+double AudioEngine::getAeolianFlowVelocity() const
+{
+    return fluidVelocity;
+}
+double AudioEngine::getAmplitude() const
+{
+    return Amplitude;
+}
+double AudioEngine::getPipeLength() const
+{
+    return pipeLength;
+}
+AudioEngine::Mode AudioEngine::getCurrentMode() const
+{
+    return currentMode;
+}
+void AudioEngine::switchMode(Mode mode)
+{
+    // Stop the audio temporarily to avoid artifacts
+    stopAudio();
+
+    // Reset waveguide state if switching away from WAVEGUIDE
+    if (currentMode == WAVEGUIDE && mode != WAVEGUIDE)
+    {
+        waveguide.reset(); // Assuming a reset method that clears waveguide state
+    }
+
+    // Reset aeolianTone state if switching away from AEOLIAN_TONE
+    // (You may need to implement a reset method for AeolianToneGenerator)
+    if (currentMode == AEOLIAN_TONE && mode != AEOLIAN_TONE)
+    {
+        aeolianTone.reset();
+    }
+
+    currentMode = mode;
+
+    // Restart the audio
+    startAudio();
 }
 
 int AudioEngine::audioCallback(void *outputBuffer, void *inputBuffer, unsigned int nBufferFrames,
@@ -94,20 +150,23 @@ int AudioEngine::audioCallback(void *outputBuffer, void *inputBuffer, unsigned i
     AudioEngine *self = static_cast<AudioEngine *>(data);
     double *outBuffer = reinterpret_cast<double *>(outputBuffer);
 
-    for (unsigned int i = 0; i < nBufferFrames; ++i)
+    switch (self->currentMode)
     {
-        double modulatedFrequency = BASE_FREQUENCY + self->pipeLength * 100.0; 
-        double inputSample = self->Amplitude * std::sin(TAU * modulatedFrequency * streamTime);
-        outBuffer[i] = self->waveguide.processSample(inputSample);
+    case WAVEGUIDE:
+        for (unsigned int i = 0; i < nBufferFrames; ++i)
+        {
+            double modulatedFrequency = BASE_FREQUENCY + self->pipeLength * 10.0;
+            double inputSample = self->Amplitude * std::sin(TAU * modulatedFrequency * streamTime);
+            outBuffer[i] = self->waveguide.processSample(inputSample);
+        }
+        break;
+
+    case AEOLIAN_TONE:
+        for (unsigned int i = 0; i < nBufferFrames; ++i)
+        {
+            outBuffer[i] = self->aeolianTone.processSample(self->fluidVelocity);
+        }
+        break;
     }
-
-    // Print for debugging
-    // static int counter = 0;
-    // if (counter++ % 500 == 0)
-    // { // Print every 500 callbacks to avoid too much console spam
-    //     std::cout << "Modulated Frequency: " << BASE_FREQUENCY + self->pipeLength * 1000.0 << std::endl;
-    //     std::cout << "Pressure Multiplier: " << self->Amplitude << std::endl;
-    // }
-
     return 0;
 }
