@@ -67,8 +67,9 @@ gui = ti.GUI('LGCA Visualization', (DIM, DIM))
 while True:
     for _ in range(10):  # Update 10 times for smoother visualization
         update_kernel()
-    visualization = np.zeros((DIM, DIM, 3), dtype=np.uint8)
+    visualization = np.zeros((DIM, DIM, 3), dtype=np.float32)
     for p in range(NUM_PARTICLES):
-        visualization += grid_lgca.to_numpy()[:, :, p].reshape(DIM, DIM, 1) * 255
-    gui.set_image(visualization)
+        visualization += grid_lgca.to_numpy()[:, :, p].reshape(DIM, DIM, 1)
+    visualization = np.clip(visualization, 0, 1) * 255  # Clip and scale
+    gui.set_image(visualization.astype(np.uint8))
     gui.show()
