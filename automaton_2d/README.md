@@ -56,3 +56,26 @@ graph TD;
     K --> L[Play Audio];
     L --> C;
 ```
+
+## GRAPHICS LIBRARY GOALS & REQUIREMENTS
+
+GOAL:
+- Develop a high-performance graphics library that facilitates efficient
+  visualization of a 2D automaton and its subsequent states in real-time.
+
+CORE REQUIREMENTS:
+1. Cross-platform: The library should work seamlessly across major platforms,
+   especially macOS M1.
+2. High Performance: Capable of rendering large datasets in real-time with minimal
+   latency.
+3. Thread-safe: Able to work concurrently with other threads, especially with audio
+   and automaton computation threads.
+4. Minimal Dependencies: Reduce dependency on extensive frameworks or libraries,
+   especially GUI-related ones.
+5. Modular: Should be easy to integrate with other parts of the system, like audio
+   processing or automaton computation.
+6. User-friendly API: The API should abstract away the complexities of Vulkan and
+   provide an intuitive interface for common tasks.
+7. Buffering: Integrate a mechanism to buffer several computations and update the 
+   visualization at a fixed rate, e.g., 60Hz.
+
