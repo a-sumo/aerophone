@@ -9,6 +9,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 find_path(RTAUDIO_INCLUDE_DIR NAMES "RtAudio.h")
 find_library(RTAUDIO_LIBRARY NAMES rtaudio)
 
+
+
 # Fallback to hardcoded paths if not found
 if(NOT RTAUDIO_INCLUDE_DIR)
     set(RTAUDIO_INCLUDE_DIR "/opt/homebrew/opt/rtaudio/include")
@@ -33,7 +35,11 @@ set(SOURCES
     src/audio_handler.cpp
 )
 
-add_executable(automaton_example ${SOURCES})
+# Find Qt packages
+find_package(Qt6 REQUIRED COMPONENTS Core Widgets)
+
+qt_standard_project_setup()
+qt_add_executable( automaton_example ${SOURCES})
 
 set(OPENMP_LIB_PATH "/opt/homebrew/opt/libomp/lib/libomp.dylib")
 set(OPENMP_INCLUDE_PATH "/opt/homebrew/opt/libomp/include")
@@ -46,6 +52,7 @@ target_include_directories(automaton_example PRIVATE
 )
 
 target_link_libraries(automaton_example PRIVATE 
+    Qt6::Core Qt6::Widgets
     ${RTAUDIO_LIBRARY} 
     ${OPENMP_LIB_PATH}
 )

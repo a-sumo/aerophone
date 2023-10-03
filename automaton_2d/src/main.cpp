@@ -6,13 +6,21 @@
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "stb_image_write.h"
 #include <iostream>
+#include <QApplication>
+#include "visualizer.h"
 
-#define WIDTH 512
-#define HEIGHT 512
-#define STEPS 1000 // Assuming longer steps for visualization
+#define WIDTH 256
+#define HEIGHT 256
+#define STEPS 44100 // Assuming longer steps for visualization
 
-int main()
+int main(int argc, char* argv[])
 {
+    QApplication app(argc, argv);
+
+    // Visualizer visualizer;
+    // visualizer.show();
+    auto start_time = std::chrono::high_resolution_clock::now(); // Start timing
+
     uint8_t **current_state = (uint8_t **)malloc(HEIGHT * sizeof(uint8_t *));
     uint8_t **next_state = (uint8_t **)malloc(HEIGHT * sizeof(uint8_t *));
     for (size_t i = 0; i < HEIGHT; i++)
@@ -41,7 +49,7 @@ int main()
     parameters.deviceId = dac.getDefaultOutputDevice();
     parameters.nChannels = 1;
     unsigned int sampleRate = 44100;
-    unsigned int bufferFrames = 256;
+    unsigned int bufferFrames = 256; // 256 sample frames
 
     try
     {
@@ -74,8 +82,11 @@ int main()
 
     for (int step = 0; step < STEPS; step++)
     {
+        auto loop_start_time = std::chrono::high_resolution_clock::now(); // Start loop timing
+
 #pragma omp parallel sections
         {
+
 #pragma omp section
             compute_next_state(current_state, next_state, WIDTH, HEIGHT);
 
@@ -86,30 +97,15 @@ int main()
             add_sustained_excitation(current_state, WIDTH, HEIGHT, step);
         }
 
-        if (step % 1000 == 0)
-        {
-            // Visualize every 1000 steps
-            uint8_t *flat_buffer = (uint8_t *)calloc(WIDTH * HEIGHT, sizeof(uint8_t));
-            for (size_t y = 0; y < HEIGHT; y++)
-            {
-                for (size_t x = 0; x < WIDTH; x++)
-                {
-                    flat_buffer[y * WIDTH + x] = current_state[y][x];
-                }
-            }
-
-            char filename[256];
-            snprintf(filename, sizeof(filename), "output/output_%05d.png", step / 367);
-            stbi_write_png(filename, WIDTH, HEIGHT, 1, flat_buffer, WIDTH);
-
-            free(flat_buffer);
-        }
-
         for (size_t i = 0; i < HEIGHT; i++)
         {
             memcpy(current_state[i], next_state[i], WIDTH * sizeof(uint8_t));
         }
+        auto loop_end_time = std::chrono::high_resolution_clock::now();
+        auto loop_duration = std::chrono::duration_cast<std::chrono::microseconds>(loop_end_time - loop_start_time).count();
+        std::cout << "Step " << step << " took " << loop_duration << " microseconds." << std::endl;
     }
+
     // Stop and close the audio stream
     try
     {
@@ -148,5 +144,9 @@ int main()
     }
     free(current_state);
     free(next_state);
-    return 0;
+    auto end_time = std::chrono::high_resolution_clock::now();
+    auto total_duration = std::chrono::duration_cast<std::chrono::seconds>(end_time - start_time).count();
+    std::cout << "Total execution time: " << total_duration << " seconds." << std::endl;
+
+    // return app.exec();
 }

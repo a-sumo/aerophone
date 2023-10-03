@@ -3,10 +3,11 @@
 
 void compute_next_state(uint8_t **current_state, uint8_t **next_state, size_t width, size_t height)
 {
+    // Change loop ordering for better memory access pattern
 #pragma omp parallel for
-    for (size_t i = 1; i < height - 1; i++)
+    for (size_t j = 1; j < width - 1; j += 8)
     {
-        for (size_t j = 1; j < width - 1; j += 8)
+        for (size_t i = 1; i < height - 1; i++)
         {
             uint8x8_t center = vld1_u8(&current_state[i][j]);
             uint8x8_t left = vld1_u8(&current_state[i][j - 1]);
@@ -28,16 +29,16 @@ void compute_next_state(uint8_t **current_state, uint8_t **next_state, size_t wi
 
 void apply_boundary_conditions(uint8_t **state, size_t width, size_t height)
 {
-    float decay_factor = 0.85;
+    uint8_t decay_value = 255 * 0.85;
     for (size_t i = 0; i < height; i++)
     {
-        state[i][0] *= decay_factor;
-        state[i][width - 1] *= decay_factor;
+        state[i][0] = state[i][0] - (255 - decay_value);
+        state[i][width - 1] = state[i][width - 1] - (255 - decay_value);
     }
     for (size_t j = 0; j < width; j++)
     {
-        state[0][j] *= decay_factor;
-        state[height - 1][j] *= decay_factor;
+        state[0][j] = state[0][j] - (255 - decay_value);
+        state[height - 1][j] = state[height - 1][j] - (255 - decay_value);
     }
 }
 

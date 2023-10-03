@@ -1,8 +1,8 @@
 #include "audio_handler.h"
 #include "automaton_2d.h"
 
-#define WIDTH 512
-#define HEIGHT 512
+#define WIDTH 256
+#define HEIGHT 256
 
 int audio_callback(void *outputBuffer, void *inputBuffer, unsigned int nBufferFrames,
                    double streamTime, RtAudioStreamStatus status, void *userData)
