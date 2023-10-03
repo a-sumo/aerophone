@@ -3,17 +3,24 @@
 #include <string.h>
 #include "automaton_2d.h"
 #include "audio_handler.h"
-#define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "stb_image_write.h"
 #include <iostream>
 #include <QApplication>
-#include "visualizer.h"
+#include <mutex>
 
 #define WIDTH 256
 #define HEIGHT 256
-#define STEPS 44100 // Assuming longer steps for visualization
+#define STEPS 44100
 
-int main(int argc, char* argv[])
+// Double buffering
+uint8_t **currentStateBuffer1;
+uint8_t **currentStateBuffer2;
+uint8_t **readState = nullptr;  // Used by audio_callback
+uint8_t **writeState = nullptr; // Updated by automaton
+
+std::mutex bufferSwapMutex; // Used to protect buffer swap operations
+
+int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
 
@@ -37,6 +44,16 @@ int main(int argc, char* argv[])
             current_state[i][j] = 255;
         }
     }
+    currentStateBuffer1 = (uint8_t **)malloc(HEIGHT * sizeof(uint8_t *));
+    currentStateBuffer2 = (uint8_t **)malloc(HEIGHT * sizeof(uint8_t *));
+    for (size_t i = 0; i < HEIGHT; i++)
+    {
+        currentStateBuffer1[i] = (uint8_t *)calloc(WIDTH, sizeof(uint8_t));
+        currentStateBuffer2[i] = (uint8_t *)calloc(WIDTH, sizeof(uint8_t));
+    }
+
+    readState = currentStateBuffer1;
+    writeState = currentStateBuffer2;
     // Initialize RtAudio and stream audio
     RtAudio dac;
     if (dac.getDeviceCount() < 1)
@@ -53,7 +70,7 @@ int main(int argc, char* argv[])
 
     try
     {
-        dac.openStream(&parameters, NULL, RTAUDIO_FLOAT32, sampleRate, &bufferFrames, &audio_callback, (void *)current_state);
+        dac.openStream(&parameters, NULL, RTAUDIO_FLOAT32, sampleRate, &bufferFrames, &audio_callback, (void *)readState); // Corrected argument
         dac.startStream();
     }
     catch (RtAudioErrorType &e)
@@ -97,13 +114,20 @@ int main(int argc, char* argv[])
             add_sustained_excitation(current_state, WIDTH, HEIGHT, step);
         }
 
-        for (size_t i = 0; i < HEIGHT; i++)
-        {
-            memcpy(current_state[i], next_state[i], WIDTH * sizeof(uint8_t));
-        }
         auto loop_end_time = std::chrono::high_resolution_clock::now();
         auto loop_duration = std::chrono::duration_cast<std::chrono::microseconds>(loop_end_time - loop_start_time).count();
         std::cout << "Step " << step << " took " << loop_duration << " microseconds." << std::endl;
+        // Copy the newly computed state to the writeState buffer
+        for (size_t i = 0; i < HEIGHT; i++)
+        {
+            memcpy(writeState[i], next_state[i], WIDTH * sizeof(uint8_t));
+        }
+
+        // Swap buffers after computation
+        {
+            std::lock_guard<std::mutex> lock(bufferSwapMutex);
+            std::swap(readState, writeState);
+        }
     }
 
     // Stop and close the audio stream

@@ -1,6 +1,10 @@
 cmake_minimum_required(VERSION 3.10)
 project(Automaton2D LANGUAGES CXX)
 
+if(NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE Debug CACHE STRING "Choose the type of build." FORCE)
+endif()
+
 set(CMAKE_OSX_DEPLOYMENT_TARGET "14.0" CACHE STRING "Minimum OS X deployment version")
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
@@ -25,8 +29,8 @@ if(NOT RTAUDIO_INCLUDE_DIR OR NOT RTAUDIO_LIBRARY)
     message(FATAL_ERROR "RtAudio not found!")
 endif()
 
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Xclang -fopenmp")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Xclang -fopenmp")
+set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -g -Xclang -fopenmp")
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -g -Xclang -fopenmp")
 
 # Source files
 set(SOURCES
