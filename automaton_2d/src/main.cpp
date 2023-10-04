@@ -5,9 +5,9 @@
 #include "audio_handler.h"
 #include "stb_image_write.h"
 #include <iostream>
-#include <QApplication>
 #include <mutex>
 #include <GLFW/glfw3.h>
+#include <webgpu/webgpu.h>
 
 #define WIDTH 256
 #define HEIGHT 256
@@ -21,10 +21,24 @@ uint8_t **writeState = nullptr; // Updated by automaton
 
 std::mutex bufferSwapMutex; // Used to protect buffer swap operations
 
-int main(int argc, char *argv[])
+int main(int, char **)
 {
-    QApplication app(argc, argv);
+    // 1. Create a descriptor for WebGPU instance
+    WGPUInstanceDescriptor desc = {};
+    desc.nextInChain = nullptr;
 
+    // 2. Create the WebGPU instance using the descriptor
+    WGPUInstance instance = wgpuCreateInstance(&desc);
+
+    // 3. Check the created instance
+    if (!instance)
+    {
+        std::cerr << "Could not initialize WebGPU!" << std::endl;
+        return 1;
+    }
+
+    // 4. Display the WebGPU instance (for debugging purposes)
+    std::cout << "WGPU instance: " << instance << std::endl;
     // Initialize GLFW
     if (!glfwInit())
     {
@@ -39,9 +53,6 @@ int main(int argc, char *argv[])
         glfwTerminate();
         return 1;
     }
-    // Visualizer visualizer;
-    // visualizer.show();
-    auto start_time = std::chrono::high_resolution_clock::now(); // Start timing
 
     uint8_t **current_state = (uint8_t **)malloc(HEIGHT * sizeof(uint8_t *));
     uint8_t **next_state = (uint8_t **)malloc(HEIGHT * sizeof(uint8_t *));
@@ -120,8 +131,6 @@ int main(int argc, char *argv[])
             break;
         }
 
-        auto loop_start_time = std::chrono::high_resolution_clock::now(); // Start loop timing
-
 #pragma omp parallel sections
         {
 
@@ -134,10 +143,6 @@ int main(int argc, char *argv[])
 #pragma omp section
             add_sustained_excitation(current_state, WIDTH, HEIGHT, step);
         }
-
-        auto loop_end_time = std::chrono::high_resolution_clock::now();
-        auto loop_duration = std::chrono::duration_cast<std::chrono::microseconds>(loop_end_time - loop_start_time).count();
-        std::cout << "Step " << step << " took " << loop_duration << " microseconds." << std::endl;
         // Copy the newly computed state to the writeState buffer
         for (size_t i = 0; i < HEIGHT; i++)
         {
@@ -190,12 +195,60 @@ int main(int argc, char *argv[])
     }
     free(current_state);
     free(next_state);
-    auto end_time = std::chrono::high_resolution_clock::now();
-    auto total_duration = std::chrono::duration_cast<std::chrono::seconds>(end_time - start_time).count();
-    std::cout << "Total execution time: " << total_duration << " seconds." << std::endl;
+    while (!glfwWindowShouldClose(window)) {
+        glfwPollEvents();
+    }
+
+    // 5. We clean up the WebGPU instance
+    wgpuInstanceRelease(instance);
 
     // Destroy the GLFW window before exiting
     glfwDestroyWindow(window);
     glfwTerminate();
-    // return app.exec();
+
+    return 0;
 }
+// int main (int, char**) {
+// 	// We create the equivalent of the navigator.gpu if this were web code
+
+// 	// 1. We create a descriptor
+// 	WGPUInstanceDescriptor desc = {};
+// 	desc.nextInChain = nullptr;
+
+// 	// 2. We create the instance using this descriptor
+// 	WGPUInstance instance = wgpuCreateInstance(&desc);
+
+// 	// 3. We can check whether there is actually an instance created
+// 	if (!instance) {
+// 		std::cerr << "Could not initialize WebGPU!" << std::endl;
+// 		return 1;
+// 	}
+
+// 	// 4. Display the object (WGPUInstance is a simple pointer, it may be
+// 	// copied around without worrying about its size).
+// 	std::cout << "WGPU instance: " << instance << std::endl;
+
+// 	if (!glfwInit()) {
+// 		std::cerr << "Could not initialize GLFW!" << std::endl;
+// 		return 1;
+// 	}
+
+// 	GLFWwindow* window = glfwCreateWindow(640, 480, "Learn WebGPU", NULL, NULL);
+// 	if (!window) {
+// 		std::cerr << "Could not open window!" << std::endl;
+// 		glfwTerminate();
+// 		return 1;
+// 	}
+
+// 	while (!glfwWindowShouldClose(window)) {
+// 		glfwPollEvents();
+// 	}
+
+// 	// 5. We clean up the WebGPU instance
+// 	wgpuInstanceRelease(instance);
+
+// 	glfwDestroyWindow(window);
+// 	glfwTerminate();
+
+// 	return 0;
+// }

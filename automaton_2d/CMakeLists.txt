@@ -11,6 +11,12 @@ set(CMAKE_OSX_DEPLOYMENT_TARGET "14.0" CACHE STRING "Minimum OS X deployment ver
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
+# Include webgpu directory, to define the 'webgpu' target
+add_subdirectory(webgpu)
+
+# # If you're using the wgpu-native distribution with precompiled binaries, add this:
+# target_copy_webgpu_binaries(App)
+
 # Find RtAudio header and library
 find_path(RTAUDIO_INCLUDE_DIR NAMES "RtAudio.h")
 find_library(RTAUDIO_LIBRARY NAMES rtaudio)
@@ -80,6 +86,5 @@ if(XCODE)
         XCODE_SCHEME_ENABLE_GPU_FRAME_CAPTURE_MODE "Metal")
 endif()
 
-# Integrate GLFW into the project
-add_subdirectory(glfw)
-target_link_libraries(automaton_example PRIVATE glfw)
+# we're careful to link glfw before webgpu, so that the glfw symbols are used
+target_link_libraries(automaton_example PRIVATE glfw webgpu)
