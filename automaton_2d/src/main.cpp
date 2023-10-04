@@ -7,6 +7,7 @@
 #include <iostream>
 #include <QApplication>
 #include <mutex>
+#include <GLFW/glfw3.h>
 
 #define WIDTH 256
 #define HEIGHT 256
@@ -24,6 +25,20 @@ int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
 
+    // Initialize GLFW
+    if (!glfwInit())
+    {
+        std::cerr << "Could not initialize GLFW!" << std::endl;
+        return 1;
+    }
+    // Create the GLFW window
+    GLFWwindow *window = glfwCreateWindow(640, 480, "Learn WebGPU", NULL, NULL);
+    if (!window)
+    {
+        std::cerr << "Could not open window!" << std::endl;
+        glfwTerminate();
+        return 1;
+    }
     // Visualizer visualizer;
     // visualizer.show();
     auto start_time = std::chrono::high_resolution_clock::now(); // Start timing
@@ -99,6 +114,12 @@ int main(int argc, char *argv[])
 
     for (int step = 0; step < STEPS; step++)
     {
+        // Check for window close event
+        if (glfwWindowShouldClose(window))
+        {
+            break;
+        }
+
         auto loop_start_time = std::chrono::high_resolution_clock::now(); // Start loop timing
 
 #pragma omp parallel sections
@@ -128,6 +149,7 @@ int main(int argc, char *argv[])
             std::lock_guard<std::mutex> lock(bufferSwapMutex);
             std::swap(readState, writeState);
         }
+        glfwPollEvents();
     }
 
     // Stop and close the audio stream
@@ -172,5 +194,8 @@ int main(int argc, char *argv[])
     auto total_duration = std::chrono::duration_cast<std::chrono::seconds>(end_time - start_time).count();
     std::cout << "Total execution time: " << total_duration << " seconds." << std::endl;
 
+    // Destroy the GLFW window before exiting
+    glfwDestroyWindow(window);
+    glfwTerminate();
     // return app.exec();
 }

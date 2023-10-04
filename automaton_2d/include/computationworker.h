@@ -2,24 +2,23 @@
 #define COMPUTATIONWORKER_H
 
 #include <QObject>
-#include <QThread>
+#include <QMutex>
+#include "automaton_2d.h"
 
-class ComputationWorker : public QObject {
+class ComputationWorker : public QObject
+{
     Q_OBJECT
 
 public:
     explicit ComputationWorker(QObject *parent = nullptr);
-    ~ComputationWorker();
-
-public slots:
-    void process();
+    void compute();
 
 signals:
-    void imageReady(uint8_t **state);
-    void finished();
+    void computationDone();
 
 private:
-    // Put all necessary computation methods and variables here
+    QMutex mutex;
+    // other private members...
 };
 
-#endif // COMPUTATIONWORKER_H
+#endif

@@ -14,8 +14,8 @@ static float next_avg = 0.0f;
 static unsigned int frames_since_last_update = 0;
 extern std::mutex bufferSwapMutex;
 
-int audio_callback(void *outputBuffer, void *inputBuffer, unsigned int nBufferFrames,
-                   double streamTime, RtAudioStreamStatus status, void *userData)
+int audio_callback(void *outputBuffer, [[maybe_unused]] void *inputBuffer, unsigned int nBufferFrames,
+                   [[maybe_unused]] double streamTime, [[maybe_unused]] RtAudioStreamStatus status, [[maybe_unused]] void *userData)
 {
     uint8_t **current_state;
     {
