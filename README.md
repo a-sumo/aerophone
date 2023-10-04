@@ -1,7 +1,7 @@
 
 aerophone
 
-Active development has moved to https://github.com/a-sumo/lattice/ to focus on 
+Active development has moved to https://github.com/a-sumo/lattice/ to focus on automata physics. 
 I'm preserving this project for documentation and note-taking purposes.
 
 ## Introduction
