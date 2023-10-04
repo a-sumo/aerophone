@@ -1,5 +1,9 @@
 
 aerophone
+
+Active development has moved to https://github.com/a-sumo/lattice/ to focus on 
+I'm preserving this project for documentation and note-taking purposes.
+
 ## Introduction
 
 The core objective of this project is to define a class of intuitive, sound generating physical processes. These processes should span a broad spectrum of sounds, extending beyond the audio feature regions typically associated with their real-world counterparts. Unlike real-world instruments, this class of processes is tailored for Extended Reality (XR) applications often characterized by an absence of haptic feedback. Another key requirement is the evocativeness and intuitiveness of visual representations in relation to audio features.
